@@ -1,15 +1,27 @@
+#Import statements appear at the beginning...
+#Before any app coding occurs
+
 import seaborn as sns
 from faicons import icon_svg
 from shiny import reactive
 from shiny.express import input, render, ui
-import palmerpenguins 
+import palmerpenguins
+from shinyswatch import theme
 
+
+#Define dataframe (df) and load data
 df = palmerpenguins.load_penguins()
 
-ui.page_opts(title="JGanyo Penguins Interactive", fillable=True)
+#Using Page options, Customize Page Title
+ui.page_opts(title="JGanyo Penguins dashboard", 
+             fillable=True, 
+            )
+theme.yeti()
 
+#Create Sidebar for user interactive choices
+#Add Custom title to sidebar menu
 
-with ui.sidebar(title="Filter by"):
+with ui.sidebar(title="Filter Options"):
     ui.input_slider("mass", "Mass", 2000, 6000, 6000)
     ui.input_checkbox_group(
         "species",
@@ -17,26 +29,25 @@ with ui.sidebar(title="Filter by"):
         ["Adelie", "Gentoo", "Chinstrap"],
         selected=["Adelie", "Gentoo", "Chinstrap"],
     )
+#Create horizontal rule for next set of 
+#input including all links
     ui.hr()
+#Name the side bar section 
+    #since it is a 'new' topic=links
     ui.h6("Links")
     ui.a(
         "GitHub Source",
-        href="https://github.com/jackieganyo/cintel-07-tdash",
+        href="https://github.com/denisecase/cintel-07-tdash",
         target="_blank",
     )
     ui.a(
-        "Instructor GitHub App",
+        "GitHub App",
         href="https://denisecase.github.io/cintel-07-tdash/",
         target="_blank",
     )
-     ui.a(
-        "JGanyo GitHub App",
-        href="https://jackieganyo.github.io/cintel-07-tdash/",
-        target="_blank",
-    )
     ui.a(
-        "GitHub JGanyo Issues",
-        href="https://github.com/jackieganyo/cintel-07-tdash/issues",
+        "GitHub Issues",
+        href="https://github.com/denisecase/cintel-07-tdash/issues",
         target="_blank",
     )
     ui.a("PyShiny", href="https://shiny.posit.co/py/", target="_blank")
@@ -51,9 +62,14 @@ with ui.sidebar(title="Filter by"):
         target="_blank",
     )
 
+#Create the main body of the app
+#using column wrap layout,
+#Value box user interface cards for each unique
+#characteristic (# of Penguins, Avg Bill Length, Avg Bill depth & scatterplot)
 
 with ui.layout_column_wrap(fill=False):
-    with ui.value_box(showcase=icon_svg("earlybirds")):
+#Is it trademark infrigement to use the Linux Penguin in this manner?
+    with ui.value_box(showcase=icon_svg("linux")):
         "Number of penguins"
 
         @render.text
@@ -72,21 +88,24 @@ with ui.layout_column_wrap(fill=False):
 
         @render.text
         def bill_depth():
-            return f"{filtered_df()['bill_length_mm'].mean():.1f} mm"
+            return f"{filtered_df()['bill_depth_mm'].mean():.1f} mm"
+
 
 with ui.layout_columns():
-    with ui.card(full_screen=True):
-        ui.card_header("Bill length vs. depth")
 
-        @render.plot
+    #build User Interface with Seaborn Scatterplot
+    with ui.card(full_screen=True):        
+        ui.card_header("Bill length vs depth")
+
+        @render.plot(alt="A Seaborn scatterplot comparing bill length and depth in millimeters.")
         def length_depth():
             return sns.scatterplot(
                 data=filtered_df(),
-                x="Bill length (mm)",
-                y="Bill depth (mm)",
-                hue="species",
-            )
-
+                x="bill_length_mm",
+                y="bill_depth_mm",
+                hue="species"
+                )
+           
     with ui.card(full_screen=True):
         ui.card_header("Penguin Data")
 
