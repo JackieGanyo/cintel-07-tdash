@@ -1,7 +1,9 @@
 faicons
 shiny
 shinylive
+shinywidgets
 seaborn
 pandas
 palmerpenguins
 shinyswatch
+plotly.express
