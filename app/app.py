@@ -1,10 +1,12 @@
 #Import statements appear at the beginning...
 #Before any app coding occurs
 
+import plotly.express as px
+from shiny.express import input, render, ui
+from shinywidgets import render_plotly
 import seaborn as sns
 from faicons import icon_svg
 from shiny import reactive
-from shiny.express import input, render, ui
 import palmerpenguins
 from shinyswatch import theme
 
@@ -105,7 +107,18 @@ with ui.layout_columns():
                 y="bill_depth_mm",
                 hue="species"
                 )
-           
+ 
+    #Build User Interface with Plotly Histogram
+    with ui.card(full_screen=True):
+        ui.card_header("Plotly Interactive")
+        
+    ui.input_selectize("var", "Select variable",
+    choices=["bill_length_mm", "body_mass_g"])
+    @render_plotly
+    def hist():
+          return px.histogram(df, x=input.var())
+
+    
     with ui.card(full_screen=True):
         ui.card_header("Penguin Data")
 
