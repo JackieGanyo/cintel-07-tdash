@@ -111,11 +111,10 @@ with ui.layout_columns():
     #Build User Interface with Plotly Histogram
     with ui.card(full_screen=True):
         ui.card_header("Plotly Interactive")
-        
-    ui.input_selectize("var", "Select variable",
-    choices=["bill_length_mm", "body_mass_g"])
-    @render_plotly
-    def hist():
+        ui.input_selectize("var", "Select variable",
+                           choices=["bill_length_mm", "body_mass_g"])
+        @render_plotly
+        def hist():
           return px.histogram(df, x=input.var())
 
     
